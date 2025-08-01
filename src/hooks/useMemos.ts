@@ -11,6 +11,7 @@ export const useMemos = () => {
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
+  const [selectedMemo, setSelectedMemo] = useState<Memo | null>(null)
 
   // 메모 로드
   useEffect(() => {
@@ -56,15 +57,24 @@ export const useMemos = () => {
 
       localStorageUtils.updateMemo(updatedMemo)
       setMemos(prev => prev.map(memo => (memo.id === id ? updatedMemo : memo)))
+      if (selectedMemo?.id === id) {
+        setSelectedMemo(updatedMemo)
+      }
     },
-    [memos]
+    [memos, selectedMemo]
   )
 
   // 메모 삭제
-  const deleteMemo = useCallback((id: string): void => {
-    localStorageUtils.deleteMemo(id)
-    setMemos(prev => prev.filter(memo => memo.id !== id))
-  }, [])
+  const deleteMemo = useCallback(
+    (id: string): void => {
+      localStorageUtils.deleteMemo(id)
+      setMemos(prev => prev.filter(memo => memo.id !== id))
+      if (selectedMemo?.id === id) {
+        setSelectedMemo(null)
+      }
+    },
+    [selectedMemo]
+  )
 
   // 메모 검색
   const searchMemos = useCallback((query: string): void => {
@@ -83,6 +93,22 @@ export const useMemos = () => {
     },
     [memos]
   )
+
+  const selectMemo = useCallback(
+    (id: string | null): void => {
+      if (id === null) {
+        setSelectedMemo(null)
+        return
+      }
+      const memoToSelect = memos.find(memo => memo.id === id)
+      setSelectedMemo(memoToSelect || null)
+    },
+    [memos]
+  )
+
+  const clearSelectedMemo = useCallback(() => {
+    setSelectedMemo(null)
+  }, [])
 
   // 필터링된 메모 목록
   const filteredMemos = useMemo(() => {
@@ -141,6 +167,7 @@ export const useMemos = () => {
     searchQuery,
     selectedCategory,
     stats,
+    selectedMemo,
 
     // 메모 CRUD
     createMemo,
@@ -148,9 +175,11 @@ export const useMemos = () => {
     deleteMemo,
     getMemoById,
 
-    // 필터링 & 검색
+    // 필터링 & 검색 & 선택
     searchMemos,
     filterByCategory,
+    selectMemo,
+    clearSelectedMemo,
 
     // 유틸리티
     clearAllMemos,

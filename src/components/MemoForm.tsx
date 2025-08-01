@@ -7,6 +7,9 @@ import {
   MEMO_CATEGORIES,
   DEFAULT_CATEGORIES,
 } from '@/types/memo'
+import MDEditor from '@uiw/react-md-editor'
+import '@uiw/react-md-editor/markdown-editor.css'
+import '@uiw/react-markdown-preview/markdown.css'
 
 interface MemoFormProps {
   isOpen: boolean
@@ -169,26 +172,23 @@ export default function MemoForm({
             </div>
 
             {/* 내용 */}
-            <div>
+            <div data-color-mode="light">
               <label
                 htmlFor="content"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
                 내용 *
               </label>
-              <textarea
-                id="content"
+              <MDEditor
                 value={formData.content}
-                onChange={e =>
+                onChange={content =>
                   setFormData(prev => ({
                     ...prev,
-                    content: e.target.value,
+                    content: content || '',
                   }))
                 }
-                className="placeholder-gray-400 text-gray-400 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
-                placeholder="메모 내용을 입력하세요"
-                rows={8}
-                required
+                preview="live"
+                height={300}
               />
             </div>
 
