@@ -5,6 +5,7 @@ import { useMemos } from '@/hooks/useMemos'
 import { Memo, MemoFormData } from '@/types/memo'
 import MemoList from '@/components/MemoList'
 import MemoForm from '@/components/MemoForm'
+import MemoDetailModal from '@/components/MemoDetailModal'
 
 export default function Home() {
   const {
@@ -18,6 +19,9 @@ export default function Home() {
     deleteMemo,
     searchMemos,
     filterByCategory,
+    selectedMemo,
+    selectMemo,
+    clearSelectedMemo,
   } = useMemos()
 
   const [isFormOpen, setIsFormOpen] = useState(false)
@@ -43,6 +47,10 @@ export default function Home() {
   const handleCloseForm = () => {
     setIsFormOpen(false)
     setEditingMemo(null)
+  }
+
+  const handleCloseDetail = () => {
+    clearSelectedMemo()
   }
 
   return (
@@ -91,8 +99,7 @@ export default function Home() {
           selectedCategory={selectedCategory}
           onSearchChange={searchMemos}
           onCategoryChange={filterByCategory}
-          onEditMemo={handleEditMemo}
-          onDeleteMemo={deleteMemo}
+          onSelectMemo={selectMemo}
           stats={stats}
         />
       </main>
@@ -104,6 +111,16 @@ export default function Home() {
         onSubmit={editingMemo ? handleUpdateMemo : handleCreateMemo}
         editingMemo={editingMemo}
       />
+
+      {/* 메모 상세 뷰 모달 */}
+      {selectedMemo && (
+        <MemoDetailModal
+          memo={selectedMemo}
+          onClose={handleCloseDetail}
+          onEdit={handleEditMemo}
+          onDelete={deleteMemo}
+        />
+      )}
     </div>
   )
 }

@@ -10,8 +10,7 @@ interface MemoListProps {
   selectedCategory: string
   onSearchChange: (query: string) => void
   onCategoryChange: (category: string) => void
-  onEditMemo: (memo: Memo) => void
-  onDeleteMemo: (id: string) => void
+  onSelectMemo: (id: string) => void
   stats: {
     total: number
     filtered: number
@@ -26,8 +25,7 @@ export default function MemoList({
   selectedCategory,
   onSearchChange,
   onCategoryChange,
-  onEditMemo,
-  onDeleteMemo,
+  onSelectMemo,
   stats,
 }: MemoListProps) {
   if (loading) {
@@ -82,8 +80,7 @@ export default function MemoList({
               <option value="all">전체 카테고리</option>
               {DEFAULT_CATEGORIES.map(category => (
                 <option key={category} value={category}>
-                  {MEMO_CATEGORIES[category]} ({stats.byCategory[category] || 0}
-                  )
+                  {MEMO_CATEGORIES[category]} ({stats.byCategory[category] || 0})
                 </option>
               ))}
             </select>
@@ -151,8 +148,7 @@ export default function MemoList({
             <MemoItem
               key={memo.id}
               memo={memo}
-              onEdit={onEditMemo}
-              onDelete={onDeleteMemo}
+              onSelect={onSelectMemo}
             />
           ))}
         </div>
